@@ -14,7 +14,11 @@ btn.addEventListener('mouseover', (e) => {
                 console.log("please enter email address")
             }
             else {
-                localStorage.setItem(NameInput.value, EmailInput.value);
+                let info = {
+                    name: NameInput.value, email: EmailInput.value
+                }
+                let infoJson = JSON.stringify(info);
+                localStorage.setItem("AppointmentInfo", infoJson);
             }
         })
 
@@ -26,8 +30,7 @@ btn.addEventListener('mouseout', (e) => {
         console.log(`You have not entered any value`);
     }
     else {
-        console.log(NameInput.value);
-        console.log(localStorage.getItem(NameInput.value));
+        console.log(localStorage.getItem("AppointmentInfo"));
         console.log("Success");
     }
 })
