@@ -35,15 +35,19 @@ btn.addEventListener('click', (e) => {
         var delbutton = document.createElement('button');
         delbutton.className = "btn btn-danger btn-sm float-right m-0 delete w-25";
         delbutton.appendChild(document.createTextNode("X"));
+        var Editbutton = document.createElement('button');
+        Editbutton.className = "btn mr-1 btn-info btn-sm float-right m-0 edit w-25";
+        Editbutton.appendChild(document.createTextNode("Edit"));
         li.appendChild(document.createTextNode(inforparsed.name + " " + "|" + " " + inforparsed.pno + " " + "|" + " " + inforparsed.email + " " + "|" + " "));
         li.appendChild(delbutton);
+        li.appendChild(Editbutton);
         AppointmetList.appendChild(li);
         console.log("success");
     }
 });
 
 AppointmetList.addEventListener('click', clearLi);
-
+AppointmetList.addEventListener('click', editLi);
 function clearLi(e) {
     if (e.target.classList.contains('delete')) {
         if (confirm('Are you sure?')) {
@@ -52,5 +56,18 @@ function clearLi(e) {
             let nameToDelete = Parli.textContent.split('|')[0].trim();
             localStorage.removeItem(nameToDelete);
         }
+    }
+}
+function editLi(e) {
+    if (e.target.classList.contains('edit')) {
+        let Parli = e.target.parentElement;
+        AppointmetList.removeChild(Parli);
+        let name = Parli.textContent.split('|')[0].trim();
+        let pno = Parli.textContent.split('|')[1].trim();
+        let email = Parli.textContent.split('|')[2].trim();
+        localStorage.removeItem(name);
+        NameInput.value = name;
+        PnoInput.value = pno;
+        EmailInput.value = email;
     }
 }
