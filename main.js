@@ -9,14 +9,11 @@ btn.addEventListener('mouseover', (e) => {
     e.preventDefault();
     if (NameInput.value === '') {
         console.log("Please enter your name");
-    }
-    else if (PnoInput.value === '') {
+    } else if (PnoInput.value === '') {
         console.log("Please enter a valid phone number");
-    }
-    else if (EmailInput.value === '') {
+    } else if (EmailInput.value === '') {
         console.log("Please enter an email address");
-    }
-    else {
+    } else {
         flag = true;
     }
 });
@@ -28,28 +25,54 @@ btn.addEventListener('click', (e) => {
             name: NameInput.value, pno: PnoInput.value, email: EmailInput.value
         }
         let infoJson = JSON.stringify(info);
-        axios.post("https://crudcrud.com/api/b0b949456fc74925a0d4a0a70f759182/appoinmentData", infoJson, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(res => {
-                showUser(res.data);
-            }).catch(err => {
-                console.log(err);
+        const userId = btn.getAttribute("data-user-id");
+
+        if (userId) {
+            axios.put(`https://crudcrud.com/api/e7558da975a74961a11e5842fa4fd7ad/appoinmentData/${userId}`, infoJson, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             })
+                .then(res => {
+                    updateEditedUser(userId, infoJson);
+                    NameInput.value = '';
+                    PnoInput.value = '';
+                    EmailInput.value = '';
+                    btn.removeAttribute("data-user-id");
+                    btn.value = 'Submit';
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else {
+            axios.post("https://crudcrud.com/api/e7558da975a74961a11e5842fa4fd7ad/appoinmentData", infoJson, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(res => {
+                    showUser(res.data);
+                    NameInput.value = '';
+                    PnoInput.value = '';
+                    EmailInput.value = '';
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 });
+
 window.addEventListener("DOMContentLoaded", () => {
-    axios.get("https://crudcrud.com/api/b0b949456fc74925a0d4a0a70f759182/appoinmentData").then(res => {
+    axios.get("https://crudcrud.com/api/e7558da975a74961a11e5842fa4fd7ad/appoinmentData").then(res => {
         for (let i = 0; i < res.data.length; i++) {
             showUser(res.data[i]);
-
         }
     }).catch(err => {
         console.log(err);
     })
 })
+
 function showUser(data) {
     let inforparsed = data;
     let li = document.createElement('li');
@@ -61,20 +84,21 @@ function showUser(data) {
     var Editbutton = document.createElement('button');
     Editbutton.className = "btn mr-1 btn-info btn-sm float-right m-0 edit w-25";
     Editbutton.appendChild(document.createTextNode("Edit"));
-    li.appendChild(document.createTextNode(inforparsed.name + " " + "|" + " " + inforparsed.pno + " " + "|" + " " + inforparsed.email + " " + "|" + " "));
+    li.appendChild(document.createTextNode(inforparsed.name + " | " + inforparsed.pno + " | " + inforparsed.email + " | "));
     li.appendChild(delbutton);
     li.appendChild(Editbutton);
     AppointmetList.appendChild(li);
 }
 
 AppointmetList.addEventListener('click', deleteuser);
-AppointmetList.addEventListener('click', editLi);
+AppointmetList.addEventListener('click', EditUser);
+
 function deleteuser(e) {
     if (e.target.classList.contains('delete')) {
         if (confirm('Are you sure?')) {
             let Parli = e.target.parentElement;
             let userId = Parli.getAttribute("user-id");
-            axios.delete(`https://crudcrud.com/api/b0b949456fc74925a0d4a0a70f759182/appoinmentData/${userId}`)
+            axios.delete(`https://crudcrud.com/api/e7558da975a74961a11e5842fa4fd7ad/appoinmentData/${userId}`)
                 .then(() => {
                     AppointmetList.removeChild(Parli);
                 })
@@ -84,16 +108,35 @@ function deleteuser(e) {
         }
     }
 }
-function editLi(e) {
+
+function EditUser(e) {
     if (e.target.classList.contains('edit')) {
         let Parli = e.target.parentElement;
-        AppointmetList.removeChild(Parli);
+        let userId = Parli.getAttribute("user-id");
         let name = Parli.textContent.split('|')[0].trim();
         let pno = Parli.textContent.split('|')[1].trim();
         let email = Parli.textContent.split('|')[2].trim();
-        localStorage.removeItem(name);
         NameInput.value = name;
         PnoInput.value = pno;
         EmailInput.value = email;
+        btn.setAttribute("data-user-id", userId);
+        btn.value = 'Update';
     }
+}
+
+function updateEditedUser(userId, newData) {
+    let data = JSON.parse(newData);
+    const liToUpdate = document.querySelector(`li[user-id="${userId}"]`);
+    if (liToUpdate) {
+        liToUpdate.textContent = `${data.name} | ${data.pno} | ${data.email} | `;
+        var delbutton = document.createElement('button');
+        delbutton.className = "btn btn-danger btn-sm float-right m-0 delete w-25";
+        delbutton.appendChild(document.createTextNode("X"));
+        var Editbutton = document.createElement('button');
+        Editbutton.className = "btn mr-1 btn-info btn-sm float-right m-0 edit w-25";
+        Editbutton.appendChild(document.createTextNode("Edit"));
+        liToUpdate.appendChild(delbutton);
+        liToUpdate.appendChild(Editbutton);
+    }
+
 }
