@@ -54,6 +54,7 @@ function showUser(data) {
     let inforparsed = data;
     let li = document.createElement('li');
     li.className = "list-group-item";
+    li.setAttribute("user-id", inforparsed._id);
     var delbutton = document.createElement('button');
     delbutton.className = "btn btn-danger btn-sm float-right m-0 delete w-25";
     delbutton.appendChild(document.createTextNode("X"));
@@ -66,15 +67,20 @@ function showUser(data) {
     AppointmetList.appendChild(li);
 }
 
-AppointmetList.addEventListener('click', clearLi);
+AppointmetList.addEventListener('click', deleteuser);
 AppointmetList.addEventListener('click', editLi);
-function clearLi(e) {
+function deleteuser(e) {
     if (e.target.classList.contains('delete')) {
         if (confirm('Are you sure?')) {
             let Parli = e.target.parentElement;
-            AppointmetList.removeChild(Parli);
-            let nameToDelete = Parli.textContent.split('|')[0].trim();
-            localStorage.removeItem(nameToDelete);
+            let userId = Parli.getAttribute("user-id");
+            axios.delete(`https://crudcrud.com/api/b0b949456fc74925a0d4a0a70f759182/appoinmentData/${userId}`)
+                .then(() => {
+                    AppointmetList.removeChild(Parli);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 }
