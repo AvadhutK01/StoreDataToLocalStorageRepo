@@ -35,12 +35,21 @@ btn.addEventListener('click', (e) => {
         })
             .then(res => {
                 showUser(res.data);
-                console.log(res);
             }).catch(err => {
                 console.log(err);
             })
     }
 });
+window.addEventListener("DOMContentLoaded", () => {
+    axios.get("https://crudcrud.com/api/b0b949456fc74925a0d4a0a70f759182/appoinmentData").then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+            showUser(res.data[i]);
+
+        }
+    }).catch(err => {
+        console.log(err);
+    })
+})
 function showUser(data) {
     let inforparsed = data;
     let li = document.createElement('li');
