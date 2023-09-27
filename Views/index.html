@@ -5,15 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Adding Data to Local Storage</title>
+    <title>Booking Appointment</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
         integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
     <header>
-        <h1>Booking Appoinment</h1>
+        <h1>Booking Appointment</h1>
     </header>
 
     <section class="container-1">
@@ -22,24 +23,22 @@
             <div class="msg"></div>
             <div>
                 <label for="name">Name:</label>
-                <input type="text" id="name">
+                <input type="text" id="name" name="name">
             </div>
             <div>
                 <label for="Pno">Phone No:</label>
-                <input type="text" id="pno">
+                <input type="text" id="phone_no" name="phone_no">
             </div>
             <div>
                 <label for="email">Email:</label>
-                <input type="text" id="email">
+                <input type="text" id="email" name="email">
             </div>
-            <input class="btn" type="submit" value="Submit">
+            <input class="btn" type="submit" id="btn" name="btn" value="Submit">
         </form>
+
     </section>
-    <ul id="Appoinments" class="list-group">
+    <ul id="Appointments" class="list-group">
     </ul>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
     <script src="main.js"></script>
 </body>
 
